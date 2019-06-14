@@ -13,6 +13,7 @@ services:
       - ./php/php.ini:/usr/local/etc/php/php.ini:ro # 当前php配置文件；可以拷贝修改php-dev.ini为想要的配置
       - ./php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
       - ../logs/php-fpm:/var/log/php-fpm:rw
+      #- ../logs/php-fpm/xdebug_remote.log:/var/log/xdebug_remote.log:rw
     restart: "no"
     command: php-fpm
 
@@ -30,7 +31,7 @@ services:
       - ../logs/nginx:/var/log/nginx
     ports:
       - "180:80"
-      - "8010:801"
+      - "801:801"
       - "18080:8080"
       - "1443:443"
     restart: "no"
@@ -63,6 +64,9 @@ services:
       build: ./es
       ports:
         - "9200:9200"
-      #volumes:
-        #- ../data/es:/usr/share/elasticsearch/data
+      environment:
+        - cluster.name=esCluster 
+        - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # JVM大小 
+      # volumes:
+      #   - ../data/es:/usr/share/elasticsearch/data:rw
       restart: "no"

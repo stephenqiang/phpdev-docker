@@ -22,6 +22,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         && docker-php-ext-install pdo_mysql \
         && docker-php-ext-install opcache \
         && docker-php-ext-install mysqli \
+        && pecl install xdebug-2.6.0 \
+        && docker-php-ext-enable xdebug \
         && rm -r /var/lib/apt/lists/*
 
 RUN apt-get clean
@@ -39,6 +41,16 @@ RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restri
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32    
 RUN apt-get update && apt-get install -my wget nodejs
+
+#xdebug
+# RUN echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/php.ini
+# RUN echo "xdebug.idekey = PHPSTORM" >> /usr/local/etc/php/php.ini
+# RUN echo "xdebug.remote_host=127.0.0.1" >> /usr/local/etc/php/php.ini
+# RUN echo "xdebug.remote_port=9001" >> /usr/local/etc/php/php.ini
+
+# Prevent error in nginx error.log
+RUN touch /var/log/xdebug_remote.log
+RUN chmod 777 /var/log/xdebug_remote.log
 
 # Copy extensions had downloaded
 COPY ./pkg/redis.tgz /home/redis.tgz
