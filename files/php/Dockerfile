@@ -62,6 +62,8 @@ RUN pecl install /home/redis.tgz && echo "extension=redis.so" > /usr/local/etc/p
 # Install Composer
 #ENV COMPOSER_HOME /root/composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer config -g repo.packagist composer https://packagist.phpcomposer.com
+RUN mkdir -p /var/www/.composer && chmod 777 -R /var/www/.composer
 #ENV PATH $COMPOSER_HOME/vendor/bin:$PATH
 
 RUN rm -f /home/redis.tgz \
