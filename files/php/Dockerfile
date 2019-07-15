@@ -24,6 +24,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         && docker-php-ext-install mysqli \
         && pecl install xdebug-2.6.0 \
         && docker-php-ext-enable xdebug \
+        && pecl install swoole \
+        && docker-php-ext-enable swoole \
         && rm -r /var/lib/apt/lists/*
 
 RUN apt-get clean
@@ -40,7 +42,8 @@ RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restric
 RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse" >> /etc/apt/sources.list
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32    
-RUN apt-get update && apt-get install -my wget nodejs
+RUN apt-get update && apt-get install -my wget nodejs npm
+RUN RUN npm install --registry=https://registry.npm.taobao.org
 
 #xdebug
 # RUN echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/php.ini
