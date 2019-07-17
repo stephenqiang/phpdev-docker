@@ -1,10 +1,12 @@
-FROM php:7.2-fpm
+FROM php:7.2-fpm-stretch
 LABEL maintainer="gzp@goozp.com"
 
 
 # set timezome
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+ENV DEBIAN_FRONTEND noninteractive
 
 # Install package and PHP Core extensions
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -16,8 +18,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libjpeg62-turbo-dev \
         libpng-dev \
         vim \
+        libzip-dev zip \
 	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
 	&& docker-php-ext-install -j$(nproc) gd \
+        && docker-php-ext-configure zip --with-libzip \
         && docker-php-ext-install zip \
         && docker-php-ext-install pdo_mysql \
         && docker-php-ext-install opcache \
@@ -43,7 +47,7 @@ RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restri
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32    
 RUN apt-get update && apt-get install -my wget nodejs npm
-RUN RUN npm install --registry=https://registry.npm.taobao.org
+RUN npm install --registry=https://registry.npm.taobao.org
 
 #xdebug
 # RUN echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/php.ini
