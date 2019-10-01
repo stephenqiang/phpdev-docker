@@ -1,4 +1,4 @@
-FROM php:7.2-fpm-stretch
+FROM php:7.3-fpm-stretch
 LABEL maintainer="gzp@goozp.com"
 
 
@@ -8,8 +8,23 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ENV DEBIAN_FRONTEND noninteractive
 
+# set apt source
+# RUN echo "deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse " > /etc/apt/sources.list
+# RUN echo "deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse " >> /etc/apt/sources.list
+# RUN echo "deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse " >> /etc/apt/sources.list
+# RUN echo "deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse " >> /etc/apt/sources.list
+# RUN echo "deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse " >> /etc/apt/sources.list
+# RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse " >> /etc/apt/sources.list
+# RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse " >> /etc/apt/sources.list
+# RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse " >> /etc/apt/sources.list
+# RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse " >> /etc/apt/sources.list
+# RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse" >> /etc/apt/sources.list
+
+# RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32    
+RUN sed -i "s@http://deb.debian.org@http://mirrors.aliyun.com@g" /etc/apt/sources.list && rm -Rf /var/lib/apt/lists/*
+
 # Install package and PHP Core extensions
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         dirmngr \
         apt-utils \
         gnupg \ 
@@ -19,6 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libpng-dev \
         vim \
         libzip-dev zip \
+        wget nodejs \
 	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
 	&& docker-php-ext-install -j$(nproc) gd \
         && docker-php-ext-configure zip --with-libzip \
@@ -26,28 +42,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         && docker-php-ext-install pdo_mysql \
         && docker-php-ext-install opcache \
         && docker-php-ext-install mysqli \
-        && pecl install xdebug-2.6.0 \
+        && pecl install Xdebug \
         && docker-php-ext-enable xdebug \
         && pecl install swoole \
-        && docker-php-ext-enable swoole \
-        && rm -r /var/lib/apt/lists/*
+        && docker-php-ext-enable swoole 
 
-RUN apt-get clean
-# set apt source
-RUN echo "deb http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse " > /etc/apt/sources.list
-RUN echo "deb http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse " >> /etc/apt/sources.list
-RUN echo "deb http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse " >> /etc/apt/sources.list
-RUN echo "deb http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse " >> /etc/apt/sources.list
-RUN echo "deb http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse " >> /etc/apt/sources.list
-RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic main restricted universe multiverse " >> /etc/apt/sources.list
-RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic-security main restricted universe multiverse " >> /etc/apt/sources.list
-RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic-updates main restricted universe multiverse " >> /etc/apt/sources.list
-RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic-proposed main restricted universe multiverse " >> /etc/apt/sources.list
-RUN echo "deb-src http://mirrors.aliyun.com/ubuntu/ bionic-backports main restricted universe multiverse" >> /etc/apt/sources.list
-
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 3B4FE6ACC0B21F32    
-RUN apt-get update && apt-get install -my wget nodejs npm
-RUN npm install --registry=https://registry.npm.taobao.org
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt-get install -y nodejs && npm install --registry=https://registry.npm.taobao.org
 
 #xdebug
 # RUN echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/php.ini
