@@ -6,7 +6,8 @@ services:
       - "19000:9000"
     links:
       - mysql-db:mysql-db
-      - redis-db:redis-db
+#      - redis-db:redis-db
+      - ssdb-db:ssdb-db
       - es-db:es-db
     volumes:
       - ../work/www:/data/www:rw
@@ -57,13 +58,13 @@ services:
       restart: "no"
       command: "--character-set-server=utf8"
 
-  redis-db:
-      build: ./redis
-      ports:
-        - "16379:6379"
-      volumes:
-        - ../data/redis:/data
-      restart: "no"
+#  redis-db:
+#      build: ./redis
+#      ports:
+#        - "16379:6379"
+#      volumes:
+#        - ../data/redis:/data
+#      restart: "no"
   es-db:
       build: ./es
       ports:
@@ -74,3 +75,12 @@ services:
       # volumes:
       #   - ../data/es:/usr/share/elasticsearch/data:rw
       restart: "no"
+
+  ssdb-db:
+    image: leobuskin/ssdb-docker
+    ports:
+      - "8888:8888"
+    volumes:
+      - ../data/ssdb/data:/ssdb/var
+      - ./ssdb/ssdb.conf:/ssdb/ssdb.conf:ro
+    restart: "no"
