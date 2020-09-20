@@ -84,3 +84,4 @@ services:
     volumes:
       - ../work/java:/workspace
     restart: "no"
+    tty: true

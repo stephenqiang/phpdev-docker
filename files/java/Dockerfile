@@ -1,4 +1,4 @@
-FROM thonatos/openjdk-tomcat-maven:jdk8-maven3
+FROM openjdk:8u265-jdk-slim-buster
 
 # Init
 RUN mkdir /workspace
