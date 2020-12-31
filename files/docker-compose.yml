@@ -50,13 +50,13 @@ services:
       restart: "no"
       command: "--character-set-server=utf8"
 
-#  redis-db:
-#      build: ./redis
-#      ports:
-#        - "16379:6379"
-#      volumes:
-#        - ../data/redis:/data
-#      restart: "no"
+  redis-db:
+     build: ./redis
+     ports:
+       - "6379:6379"
+     volumes:
+       - ../data/redis:/data
+     restart: "no"
   # es-db:
   #     build: ./es
   #     ports:
@@ -81,6 +81,7 @@ services:
     build: ./java
     ports:
         - "8080:8080"
+        - "9002:9002"
     volumes:
       - ../work/java:/workspace
     restart: "no"
