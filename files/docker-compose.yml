@@ -4,6 +4,7 @@ services:
     build: ./php/
     ports:
       - "19000:9000"
+      - "9001:9001"
     volumes:
       - ../work/www:/data/www:rw
       - ./php/php.ini:/usr/local/etc/php/php.ini:ro # 当前php配置文件；可以拷贝修改php-dev.ini为想要的配置
@@ -50,13 +51,14 @@ services:
       restart: "no"
       command: "--character-set-server=utf8"
 
-#  redis-db:
-#      build: ./redis
-#      ports:
-#        - "16379:6379"
-#      volumes:
-#        - ../data/redis:/data
-#      restart: "no"
+  redis-db:
+    build: ./redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ../data/redis:/data
+    restart: "no"
+
   # es-db:
   #     build: ./es
   #     ports:
@@ -81,7 +83,19 @@ services:
     build: ./java
     ports:
         - "8080:8080"
+        - "8848:8848"
+        - "9003:9003"
     volumes:
       - ../work/java:/workspace
+    restart: "no"
+    tty: true
+
+
+  hyperf:
+    build: ./hyperf
+    ports:
+        - "9501:9501"
+    volumes:
+      - ../work/www:/workspace/skeleton
     restart: "no"
     tty: true
