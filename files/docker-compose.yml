@@ -52,7 +52,6 @@ services:
       command: "--character-set-server=utf8"
 
   redis-db:
-
     build: ./redis
     ports:
       - "6379:6379"
@@ -98,7 +97,15 @@ services:
     build: ./hyperf
     ports:
         - "9501:9501"
+        - "9502:9502"
+        - "9503:9503"
     volumes:
       - ../work/www:/workspace/skeleton
     restart: "no"
     tty: true
+
+  consul:
+    build: ./consul
+    ports:
+    - "8500:8500"
+    restart: "no"
