@@ -38,7 +38,7 @@ services:
   mysql-db:
       build: ./mysql
       ports:
-        - "13306:3306"
+        - "3306:3306"
       volumes:
         - ../data/mysql:/var/lib/mysql:rw
         - ../logs/mysql:/var/lib/mysql-logs:rw
@@ -59,6 +59,11 @@ services:
       - ../data/redis:/data
     restart: "no"
 
+  gearman:
+    image: artefactual/gearmand:1.1.19.1-alpine
+    ports:
+      - "4730:4730"
+    restart: "no"
 
   # es-db:
   #     build: ./es
@@ -80,32 +85,48 @@ services:
   #     - ./ssdb/ssdb.conf:/ssdb/ssdb.conf:ro
   #   restart: "no"
 
-  java:
-    build: ./java
-    ports:
-        - "8080:8080"
-        - "8848:8848"
-        - "9003:9003"
+  # java:
+  #   build: ./java
+  #   ports:
+  #       - "8080:8080"
+  #       - "8848:8848"
+  #       - "9003:9003"
 
-    volumes:
-      - ../work/java:/workspace
-    restart: "no"
-    tty: true
+  #   volumes:
+  #     - ../work/java:/workspace
+  #   restart: "no"
+  #   tty: true
 
 
-  hyperf:
-    build: ./hyperf
-    ports:
-        - "9501:9501"
-        - "9502:9502"
-        - "9503:9503"
-    volumes:
-      - ../work/www:/workspace/skeleton
-    restart: "no"
-    tty: true
+  # hyperf:
+  #   build: ./hyperf
+  #   ports:
+  #       - "9501:9501"
+  #       - "9502:9502"
+  #       - "9503:9503"
+  #   volumes:
+  #     - ../work/www:/workspace/skeleton
+  #   restart: "no"
+  #   tty: true
 
-  consul:
-    build: ./consul
-    ports:
-    - "8500:8500"
-    restart: "no"
+  # consul:
+  #   build: ./consul
+  #   ports:
+  #   - "8500:8500"
+  #   restart: "no"
+
+  # gitlab:
+  #     image: gitlab/gitlab-ce:latest
+  #     restart: always
+  #     hostname: "gitlab.local"
+  #     environment:
+  #       GITLAB_OMNIBUS_CONFIG: |
+  #         external_url "http://gitlab.local"
+  #     ports:
+  #       - "980:80"
+  #       - "9443:443"
+  #       - "922:22"
+  #     volumes:
+  #       - ../data/gitlab/config:/etc/gitlab
+  #       - ../data/gitlab/logs:/var/log/gitlab
+  #       - ../data/gitlab/data:/var/opt/gitlab
