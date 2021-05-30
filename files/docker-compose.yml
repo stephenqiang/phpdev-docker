@@ -7,8 +7,8 @@ services:
       - "9001:9001"
     volumes:
       - ../work/www:/data/www:rw
-      - ./php/php.ini:/usr/local/etc/php/php.ini:ro # 当前php配置文件；可以拷贝修改php-dev.ini为想要的配置
-      - ./php/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
+      - ./php/php.ini:/usr/local/etc/php/php.ini:rw # 当前php配置文件；可以拷贝修改php-dev.ini为想要的配置
+      - ./php/php-fpm.conf:/usr/local/etc/php-fpm.conf:rw
       - ../logs/php-fpm:/var/log/php-fpm:rw
       #- ../logs/php-fpm/xdebug_remote.log:/var/log/xdebug_remote.log:rw
     #environment:
@@ -65,16 +65,34 @@ services:
       - "4730:4730"
     restart: "no"
 
-  # es-db:
-  #     build: ./es
-  #     ports:
-  #       - "9200:9200"
-  #     environment:
-  #       - cluster.name=esCluster 
-  #       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # JVM大小 
-  #     # volumes:
-  #     #   - ../data/es:/usr/share/elasticsearch/data:rw
-  #     restart: "no"
+  es-db:
+    build: ./es
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - cluster.name=esCluster 
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"  # JVM大小 
+    volumes:
+      - ../data/es:/usr/share/elasticsearch/data:rw
+    restart: "no"
+
+  bt:
+    build: ./bt
+    ports:
+      - "21:21"
+      - "80:80"
+      - "443:443"
+      - "888:888"
+      - "3306:3306"
+      - "6379:6379"
+      - "8888:8888"
+      - "4730:4730"
+      - "39000-39010:39000-39010"
+    volumes:
+      - ../data/bt:/www:rw
+    restart: "no"
+    tty: true
 
   # ssdb-db:
   #   image: leobuskin/ssdb-docker

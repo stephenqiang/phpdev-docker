@@ -1,4 +1,4 @@
-FROM php:7.3-fpm-stretch
+FROM php:5.6-fpm-stretch
 LABEL maintainer="gzp@goozp.com"
 
 
@@ -42,13 +42,14 @@ RUN apt-get install -y --no-install-recommends \
         && docker-php-ext-install zip \
         && docker-php-ext-install pdo_mysql \
         && docker-php-ext-install opcache \
-        && docker-php-ext-install mysqli \
-        && pecl install Xdebug \
-        && docker-php-ext-enable xdebug \
-        && pecl install swoole \
-        && docker-php-ext-enable swoole 
+        && docker-php-ext-install mysqli 
 
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt-get install -y nodejs && npm install --registry=https://registry.npm.taobao.org
+#         && pecl install Xdebug \
+#         && docker-php-ext-enable xdebug \
+#         && pecl install swoole \
+#         && docker-php-ext-enable swoole 
+
+# RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt-get install -y nodejs && npm install --registry=https://registry.npm.taobao.org
 
 #xdebug
 # RUN echo "xdebug.remote_enable = 1" >> /usr/local/etc/php/php.ini
@@ -69,10 +70,11 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt-get install -
 
 # Install Composer
 #ENV COMPOSER_HOME /root/composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer config -g repo.packagist composer https://packagist.phpcomposer.com
-RUN mkdir -p /var/www/.composer && chmod 777 -R /var/www/.composer
-ENV PATH $COMPOSER_HOME/vendor/bin:$PATH
+
+# RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# RUN composer config -g repo.packagist composer https://packagist.phpcomposer.com
+# RUN mkdir -p /var/www/.composer && chmod 777 -R /var/www/.composer
+# ENV PATH $COMPOSER_HOME/vendor/bin:$PATH
 
 # RUN rm -f /home/redis.tgz \
 #         rm -f /home/cphalcon.tar.gz 
